@@ -2,47 +2,26 @@ import React, { Component } from 'react';
 import {Container, Header, Title, Content, Footer, 
         FooterTab, Button, Left, Right, Body,
         Icon, Text, List, ListItem, CheckBox, Fab, Toast} from 'native-base';
+import { allProducts, toggle, deleteAll } from '../actions/actions';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
 
-export default class ShoppingListScreen extends Component {
+
+class ShoppingListScreen extends Component {
   constructor(props){
     super(props);
-    this.state = {
-      products: [
-        {id:1, name: 'Bread', complete: false},
-        {id:2, name: 'Eggs', complete: false},
-        {id:3, name: 'Milk', complete: false},
-        {id:4, name: 'Corn', complete: false},
-        {id:5, name: 'Dog Food', complete: false},
-        {id:6, name: 'Meat', complete: false},
-        {id:7, name: 'Cereal', complete: false},
-        {id:8, name: 'Water', complete: false},
-        {id:9, name: 'Veggies', complete: false},
-        {id:10, name: 'Tissue', complete: false},
-        {id:11, name: 'Medicine', complete: false},
-        {id:12, name: 'Shoes', complete: false},
-        {id:13, name: 'Soap', complete: false},
-        {id:14, name: 'Paper Towels', complete: false},
-        {id:15, name: 'Toothpaste', complete: false},
-        {id:16, name: 'Mouthwash', complete: false},
-        {id:17, name: 'Trash Bags', complete: false},
-        {id:18, name: 'Tea', complete: false},
-        {id:19, name: 'Candy', complete: false},
-        {id:20, name: 'Detergent', complete: false}
-      ]
-    }
+  }
+
+  componentWillMount(){
+    this.props.allProducts();
   }
 
   toggleItemComplete = (id) => {
-    const index = this.state.products.findIndex(x => x.id === id);
-    const productsCopy = [...this.state.products];
-    productsCopy[index].complete = !productsCopy[index].complete;
-    this.setState({
-      ...this.state, productsCopy
-    });
+    this.props.toggle(id);
   }
 
   renderListItems = () => {    
-    const listItems = this.state.products.map(product =>       
+    const listItems = this.props.products.map(product =>       
         <ListItem key={product.id}>
           <Body>
             <Text>{product.name}</Text>
@@ -65,15 +44,28 @@ export default class ShoppingListScreen extends Component {
           </Content>
           <Fab position="bottomRight" 
                style={{backgroundColor:'green'}}
-               onPress={() => Toast.show({text:'Adding Product'})}>
+               onPress={() => this.props.navigation.navigate('AddProduct')}>
             <Icon name="add"/>
           </Fab>
           <Fab position="bottomLeft"
                style={{backgroundColor:'red'}}
-               onPress={() => Toast.show({text: 'Deleting All Products'})}>
+               onPress={() => this.props.deleteAll()}>
             <Icon name="remove" />
           </Fab>
       </Container>
     );
   }
 }
+
+function mapStateToProps(state){
+  console.log(state);
+  return {
+    products: state.products.products
+  }
+}
+
+function matchDispatchToProps(dispatch){
+  return bindActionCreators({allProducts:allProducts, toggle:toggle, deleteAll: deleteAll}, dispatch)
+}
+
+export default connect(mapStateToProps, matchDispatchToProps)(ShoppingListScreen);

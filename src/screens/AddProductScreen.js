@@ -1,28 +1,51 @@
 import React, { Component } from 'react';
-import {Platform, StyleSheet, Text, View, StatusBar} from 'react-native';
+import {Container, Content, Button, Form, Item, Input, Label, Icon, Text} from 'native-base';
+import { add } from '../actions/actions';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
 
-export default class AddProductScreen extends Component {
+class AddProductScreen extends Component {
+
+  constructor(props){
+    super(props);
+    this.state = {
+      product: ''
+    }
+  }
+
+  addProduct(){
+    this.props.add(this.state.product);
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <StatusBar barStyle="default" hidden={false} />
-        <Text style={styles.text}>Grocery List</Text>
-      </View>
+      <Container style={{padding: 10}}>
+        <Content>
+          <Form style={{marginBottom: 10}}>
+            <Item>
+              <Input placeholder="Product Name..." 
+                     value={this.state.product} 
+                     onChangeText={(newText) => this.setState({product: newText})}
+              />
+            </Item>
+          </Form>
+          <Button success block onPress={() => this.addProduct}>
+            <Text>Add Product</Text>
+          </Button>
+        </Content>
+      </Container>      
     );
   }
 }
 
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'flex-start',
-      alignItems: 'center',
-      backgroundColor: '#F5FCFF',
-      paddingTop: Platform.OS === 'ios' ? 25: 5
-    },
-    text: {
-      color: 'black',
-      fontWeight: 'bold',
-      fontSize: 20
-    }
-  });
+function mapStateToProps(state){
+  return {
+    products: state.products
+  }
+}
+
+function matchDispatchToProps(dispatch){
+  return bindActionCreators({add:add}, dispatch)
+}
+
+export default connect(mapStateToProps, matchDispatchToProps)(AddProductScreen);

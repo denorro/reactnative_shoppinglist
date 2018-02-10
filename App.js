@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
+import {Provider} from 'react-redux';
+import {createStore} from 'redux';
+import allReducers from './src/reducers/index';
 import {StackNavigator} from 'react-navigation';
 import {Root, Button, Icon, Left, Right, Toast} from 'native-base';
 import ShoppingListScreen from './src/screens/ShoppingListScreen';
 import AddProductScreen from './src/screens/AddProductScreen';
+
+const store = createStore(allReducers);
 
 const Navigator = StackNavigator({
   ShoppingList: {
@@ -27,7 +32,17 @@ const Navigator = StackNavigator({
     })
   },
   AddProduct: {
-    screen: AddProductScreen
+    screen: AddProductScreen,
+    navigationOptions: ({navigation}) => ({
+      title: 'Add Product',
+      headerTitleStyle:{alignSelf: 'center'},
+      headerLeft: <Left>
+                    <Button transparent onPress={() => navigation.navigate('ShoppingList')}>
+                      <Icon name='arrow-back' />
+                    </Button>
+                  </Left>,
+      headerRight: <Right></Right>
+    })
   }
 });
 
@@ -38,9 +53,11 @@ export default class App extends Component {
 
   render() {
     return (
-      <Root>
-        <Navigator />
-      </Root>      
+      <Provider store={store}>
+        <Root>
+          <Navigator />
+        </Root> 
+      </Provider>           
     );
   }
 }
