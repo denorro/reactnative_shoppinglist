@@ -1,26 +1,16 @@
 import React, { Component } from 'react';
-import {Platform, StyleSheet, Text, View, StatusBar} from 'react-native';
+import {Container, Header, Title, Content, Footer, 
+        FooterTab, Button, Left, Right, Body,
+        Icon, Text} from 'native-base';
 
 export default class ShoppingListScreen extends Component {
   render() {
     return (
-      <View style={styles.container}>
-      </View>
+      <Container>
+          <Content padder>
+              <Text>hey now brown cow</Text>
+          </Content>
+      </Container>
     );
   }
 }
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'flex-start',
-      alignItems: 'center',
-      backgroundColor: '#F5FCFF',
-      paddingTop: Platform.OS === 'ios' ? 10: 5
-    },
-    text: {
-      color: 'black',
-      fontWeight: 'bold',
-      fontSize: 20
-    }
-  });
