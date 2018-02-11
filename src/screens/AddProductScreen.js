@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Container, Content, Button, Form, Item, Input, Label, Icon, Text} from 'native-base';
+import {Container, Content, Button, Form, Item, Input, Label, Icon, Text, Toast} from 'native-base';
 import { add } from '../actions/actions';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -9,12 +9,17 @@ class AddProductScreen extends Component {
   constructor(props){
     super(props);
     this.state = {
-      product: ''
+      product: '',
     }
   }
 
   addProduct(){
-    this.props.add(this.state.product);
+    if(this.state.product !== ''){
+      this.props.add(this.state.product);
+      const msg = `${this.state.product} was added to your list!`;
+      Toast.show({text: msg, buttonText: 'OK', position: 'bottom', type: "success", duration: 3000});
+      this.setState({product:''});
+    }    
   }
 
   render() {
@@ -29,7 +34,7 @@ class AddProductScreen extends Component {
               />
             </Item>
           </Form>
-          <Button success block onPress={() => this.addProduct}>
+          <Button success block onPress={() => this.addProduct()}>
             <Text>Add Product</Text>
           </Button>
         </Content>
@@ -40,7 +45,7 @@ class AddProductScreen extends Component {
 
 function mapStateToProps(state){
   return {
-    products: state.products
+    products: state.products.products
   }
 }
 

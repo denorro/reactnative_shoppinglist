@@ -1,19 +1,42 @@
 import React, { Component } from 'react';
 import {Container, Header, Title, Content, Footer, 
         FooterTab, Button, Left, Right, Body,
-        Icon, Text, List, ListItem, CheckBox, Fab, Toast} from 'native-base';
-import { allProducts, toggle, deleteAll } from '../actions/actions';
+        Icon, Text, List, ListItem, CheckBox, Toast} from 'native-base';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-
+import { allProducts, toggle, deleteAll } from '../actions/actions';
 
 class ShoppingListScreen extends Component {
+
+  static navigationOptions = ({navigation}) => ({
+    title: 'Shopping List',
+    headerTitleStyle:{alignSelf: 'center'},
+    headerLeft: <Left>
+                  <Button transparent onPress={() => navigation.state.params.deleteAll()}>
+                    <Icon name='remove' />
+                  </Button>
+                </Left>,
+    headerRight: <Right>
+                  <Button transparent onPress={() => navigation.navigate('AddProduct')}>
+                    <Icon name='add' />
+                  </Button>
+                </Right>
+  });
+
   constructor(props){
     super(props);
+    this.deleteAll = this.deleteAll.bind(this);
+  }
+
+  deleteAll(){
+    this.props.deleteAll();
   }
 
   componentWillMount(){
     this.props.allProducts();
+    this.props.navigation.setParams({
+      deleteAll: this.deleteAll
+    });
   }
 
   toggleItemComplete = (id) => {
@@ -36,22 +59,12 @@ class ShoppingListScreen extends Component {
 
   render() {
     return (
-      <Container>
+      <Container style={{paddingBottom: 15}}>
           <Content padder>
               <List>
                 {this.renderListItems()}
               </List>
           </Content>
-          <Fab position="bottomRight" 
-               style={{backgroundColor:'green'}}
-               onPress={() => this.props.navigation.navigate('AddProduct')}>
-            <Icon name="add"/>
-          </Fab>
-          <Fab position="bottomLeft"
-               style={{backgroundColor:'red'}}
-               onPress={() => this.props.deleteAll()}>
-            <Icon name="remove" />
-          </Fab>
       </Container>
     );
   }
